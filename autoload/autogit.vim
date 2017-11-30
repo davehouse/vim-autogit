@@ -5,6 +5,7 @@
 " inspired by [this
 " comment](http://www.reddit.com/r/linux/comments/y5j35/texteditor_with_etherpadlike_feature/c5sijfi)
 " in reddit and the discussion.
+silent !mkdir ~/.autogit > /dev/null 2>&1
 
 function! autogit#ToggleAutogit()
 if has("autocmd")
@@ -26,12 +27,14 @@ endfunction
 
 function! autogit#Commit()
 	let repo = autogit#PrepareGitRepository()
-	call system("GIT_DIR=".repo. " GIT_WORK_TREE=. git add ".expand("%:t))
+	call system("GIT_DIR=".repo. " GIT_WORK_TREE=. git add ".expand("%:t"))
 	call system('GIT_DIR='.repo. ' GIT_WORK_TREE=. git commit -m "`date`"')
 endfunction
 
 function! autogit#PrepareGitRepository()
-	let repo_name = ".autogit-". expand("%:t")
+    let filename = expand("%:p")
+    let filename = substitute(filename, '/', '--', 'g')
+	let repo_name = $HOME."/.autogit/".filename
 	call system("GIT_DIR=".repo_name." git branch")
 	if v:shell_error
 		call system("GIT_DIR=".repo_name." git init")
