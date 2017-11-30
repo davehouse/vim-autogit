@@ -1,4 +1,5 @@
 # vim-autogit
+This is the fork of http://github.com/fmoralesc/vim-autogit
 
 autocommit changes to a file to an independent git repository.
 
