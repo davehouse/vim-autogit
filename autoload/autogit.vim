@@ -1,6 +1,6 @@
 " autogit.vim
 "
-" autocommit changes to a file to a special git repo.  
+" autocommit changes to a file to a special git repo.
 "
 " inspired by [this
 " comment](http://www.reddit.com/r/linux/comments/y5j35/texteditor_with_etherpadlike_feature/c5sijfi)
@@ -26,20 +26,21 @@ endif
 endfunction
 
 function! autogit#Commit()
-	let repo = autogit#PrepareGitRepository()
-	call system("GIT_DIR=".repo. " GIT_WORK_TREE=. git add ".expand("%:t"))
-	call system('GIT_DIR='.repo. ' GIT_WORK_TREE=. git commit -m "`date`"')
+	let git_env = autogit#PrepareGitRepository()
+	call system(git_env." git add ".expand("%:t"))
+	call system(git_env.' git commit -m "`date`"')
 endfunction
 
 function! autogit#PrepareGitRepository()
     let filename = expand("%:p")
     let filename = substitute(filename, '/', '--', 'g')
-	let repo_name = $HOME."/.autogit/".filename
-	call system("GIT_DIR=".repo_name." git branch")
+	let repo = $HOME."/.autogit/".filename
+    let git_env="GIT_DIR=".repo." GIT_WORK_TREE=. "
+	call system(git_env." git branch")
 	if v:shell_error
-		call system("GIT_DIR=".repo_name." git init")
+		call system(git_env." git init")
 	endif
-	return repo_name
+	return git_env
 endfunction
 
 function! autogit#Git(args)
